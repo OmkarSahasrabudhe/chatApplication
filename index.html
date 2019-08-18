@@ -1,0 +1,177 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="Styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <nav>
+    <table>
+      <tr class="navPadding">
+        <td>
+          <div>
+            <img src="baseline-forum-24px.svg" style="padding-top:10px;" style="padding-left:40px;" width="50px" height="50px">
+          </div>
+        </td>
+        <td>
+          <div>
+            <p class="project">Chat App</p>
+          </div>
+        </td>
+
+        <td>
+          <div class="user" style=" padding-left:930px;">
+            <p>Welcome User</p>
+
+          </div>
+        </td>
+        <td>
+          <div>
+            <img src="ac.svg" height="50px" width="50px">
+          </div>
+        </td>
+      </tr>
+    </table>
+  </nav>
+
+  <title>Chat</title>
+</head>
+
+<body style="height: 100%;">
+  <div>
+    <!-- style="height: 50vh;overflow: auto;" -->
+    <div class="chatdiv" id="chat"><label class="chats" id="username">Chat</label>
+
+    </div>
+    <div class="Userdiv" id="users"><label class="userlist">Active Users</label></div>
+  </div>
+
+  <input type="text" class="msg" id="m" autocomplete="on">
+  <input type="button" class="send" id="sent" onclick="setChat();">
+  <script type="text/javascript">
+    let activeUsers = document.getElementById("users");
+    let chatSection = document.getElementById("chat");
+    //SetChat()
+    let msgRef = document.getElementById("m");
+    function setChat() {
+      let username = document.getElementById("username").innerText;
+     
+      let msg = msgRef.value;
+      msgRef.value = "";
+      var text = document.createTextNode(msg);
+      let div = document.getElementById(username);
+      console.log('div in setChat() :     ' + div);
+      let p = document.createElement("p");
+      p.innerText = msg;
+      p.style.textAlign = 'right';
+      p.style.paddingRight = "10%";
+      //  div.appendChild(document.createElement("br"));
+      div.appendChild(p);
+      var oReq = new XMLHttpRequest();
+      oReq.open('POST', '/setChat', true);
+      oReq.setRequestHeader('Content-type', 'text/plain');
+      oReq.onreadystatechange = function () {//Call a function when the state changes.
+        if (oReq.readyState == 4 && oReq.status == 200) {
+          let result = JSON.parse(oReq.response);
+        }
+      };
+      let user = sessionStorage.getItem("lastname").toString();
+      let packet = { "u_name": username, "msg": msg, "loginuser": user };
+      let data = JSON.stringify(packet);
+      oReq.send(data);
+    }
+    function getChat() {
+      let username = document.getElementById("username").innerText;
+      var oReq = new XMLHttpRequest();
+      oReq.open('POST', '/getChat', true);
+      oReq.setRequestHeader('Content-type', 'text/plain');
+      oReq.onreadystatechange = function () {//Call a function when the state changes.
+        if (oReq.readyState == 4 && oReq.status == 200) {
+          let result;
+          if (oReq.response != '') {
+            result = JSON.parse(oReq.response);
+            let div = document.getElementById(username);
+            for (i = 0; i < result.length; i++) {
+              var text = document.createTextNode(result[i]);
+              console.log(div);
+              div.appendChild(document.createElement("br"));
+              div.appendChild(text);
+            }
+          }
+        }
+      };
+      let user = sessionStorage.getItem("lastname").toString();
+      let packet = { "u_name": username, "loginuser": user };
+      let data = JSON.stringify(packet);
+      oReq.send(data);
+    }
+    function sendReq() {
+      var oReq = new XMLHttpRequest();
+      oReq.open('POST', '/user', true);
+      let user = sessionStorage.getItem("lastname").toString();
+      //Send the proper header information along with the request
+      oReq.setRequestHeader('Content-type', 'text/plain');
+      oReq.onreadystatechange = function () {
+        //Call a function when the state changes.
+        if (oReq.readyState == 4 && oReq.status == 200) {
+          let result = JSON.parse(oReq.response);
+          var nodes = activeUsers.getElementsByTagName("button");
+
+          for (var i = 0, len = nodes.length; i != len; ++i) {
+            nodes[0].activeUsers.removeChild(nodes[0]);
+          }
+          // activeUsers.remove() = "";
+          result.forEach(element => {
+            if (element != user) {
+              let button = document.createElement("button");
+              let br = document.createElement("br");
+              button.id = `btn${element}`;
+              button.style.alignContent = 'left';
+              var text = document.createTextNode(`chat with ${element}`);
+              button.appendChild(text);
+              button.onclick = () => {
+                document.getElementById("username").innerText = element;
+                let otherUsrs = chatSection.getElementsByTagName('div');
+                for (var i = 0; i < otherUsrs.length; i++) {
+                  otherUsrs[i].style.display = 'none';
+                }
+                if (document.getElementById(element) == null) {
+                  let div = document.createElement("div");
+                  div.id = element;
+                  chatSection.appendChild(div);
+                }
+                else {
+                  document.getElementById(element).style.display = 'block';
+                }
+                clearInterval(chatinterval);
+                chatinterval();
+              };
+              activeUsers.appendChild(br);
+              activeUsers.appendChild(button);
+            }
+          });
+        }
+      }
+      oReq.send("hi");
+    }
+    setInterval(() => {
+      sendReq();
+    }, 2000);
+    let chatinterval = () => {
+      setInterval(() => {
+        getChat();
+      }, 2000);
+    };  
+    msgRef.addEventListener("keyup", function(event) {
+  event.preventDefault();
+  // Number 13 is the "Enter" key on the keyboard
+  if (event.keyCode === 13) {
+    // Trigger the button element with a click
+    document.getElementById("sent").click();
+  }
+});
+  </script>
+</body>
+
+</html>

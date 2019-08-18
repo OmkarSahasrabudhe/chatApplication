@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style type="text/css">
+        label {
+            color: black;
+            font-family: Algerian;
+            font-weight: bold;
+            font-style: italic;
+        }
+
+        input {
+            font-size: 1em;
+        }
+
+        input[type="button"] {
+            font-family: 'Arial Narrow Bold';
+            font-size: 1em;
+            font-weight: bold;
+            color: rgb(255, 255, 229);
+            width: 50%;
+            /* background: url("login.png");*/
+            background-repeat: no-repeat;
+            background-color: dodgerblue;
+        }
+
+        form {
+            padding: 0% 20% 0% 20%;
+        }
+
+        fieldset {
+            height: 50vh;
+            width: 50vh;
+            padding: 3% 20% 0% 20%;
+            margin: 10% 10% 0% 10%;
+        }
+
+        body {
+            background-image: linear-gradient(to right, gray 20%, whitesmoke);
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+
+<body>
+    <form>
+        <fieldset>
+            <legend>Enter Credentials </legend>
+            <p><label for="username">Username: </label> <input type="text" name="username" id="username" required></p>
+            <p><label for="password">Password: </label> <input type="password" name="password" id="password" required></p>
+            <p><input type="button" value="Log In" onclick="validate();"></p>
+                <p style="font-size:1em;font-family:'Times new roman';">
+                    New User? <a href="register.html">Register Here</a>.
+                </p>
+        </fieldset>
+    </form>
+    <script type="text/javascript">
+        function validate() {
+            let username = document.getElementById("username");
+            let password = document.getElementById("password");
+            if (username.value.trim() == "" || password.value.trim() == "") {
+                alert("Username and Password cannot be empty");
+            } else {
+                var oReq = new XMLHttpRequest();
+                oReq.open('POST', '/valReq', true);
+
+                //Send the proper header information along with the request
+                oReq.setRequestHeader('Content-type', 'text/plain');
+                let params = { username: username.value, password: password.value }
+                oReq.onreadystatechange = function () {//Call a function when the state changes.
+                    if (oReq.readyState == 4 && oReq.status == 200) {
+                        if (oReq.responseText == "success") {
+                            sessionStorage.setItem("lastname", username.value.toString());
+                            window.location = "/index.html";
+                        } else {
+                            alert("Invalid username or password");
+                        }
+                    }
+                }
+                oReq.send(JSON.stringify(params));
+
+            }
+        }
+    </script>
+</body>
+
+</html>

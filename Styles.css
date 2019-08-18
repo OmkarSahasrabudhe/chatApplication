@@ -1,0 +1,93 @@
+.navPadding{
+    padding-top: 10px;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-bottom: 10px;
+    
+}
+
+.userlist{
+
+font-family: monospace;
+font-size: 20px;
+width: 100%;
+text-align: center;
+background-color:#bdbdbd;
+float: left;
+text-align: center; 
+
+}
+.chats{
+    float:right;
+    font-family: monospace;
+    font-size: 20px;
+    width: 100%;
+    text-align: center;
+    background-color:#bdbdbd;
+}
+.Userdiv{
+
+    width: 25%;
+       height:500px;
+       border: 3px solid black;
+       /* padding: 25px; */
+       background-color:#fff;
+       /* margin: 25px; */
+}
+
+.chatdiv{
+float: right;
+    width: 75%;
+       height:500px;
+       border: 3px solid black;
+       /* padding: 25px; */
+       background-color:#fff;
+       /* margin: 25px; */
+}
+
+.project{
+    font-family: 'monospace';
+    color: black;
+    font-size: 30px;
+    padding-left: 25px;
+}
+nav{
+    background-color: #338a3e;
+}
+
+.user{
+    background-color: #338a3e;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 16px;
+    font-family: 'monospace';
+    color: black;
+    align-content: center;
+}
+
+.send{
+    background:url("send.svg");
+    background-repeat: no-repeat;
+    float: right;
+    margin-top: 10px;
+    margin-right: 60px;
+    width:40px;
+    height:40px;
+    /* background-color: white; */
+}
+
+ *{ 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+.msg {
+    margin-top: 10px;
+    margin-left: 30px;
+     border: 2px solid black; 
+     padding: 10px; 
+     width: 85%; 
+    } 
